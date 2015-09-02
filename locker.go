@@ -9,9 +9,16 @@ import "sync"
 //
 // Example usage:
 //  nl := NewNotifyingLocker()
-//  ch := nl.NotifyLock()
-//  go func() { nl.Lock() }()
-//  <-ch // wait for nl.Lock() to be called
+//  lch := nl.NotifyLock()
+//  uch := nl.NotifyUnlock()
+//  go func() {
+//    nl.Lock()
+//  }()
+//  go func() {
+//    <-lch // wait for nl.Lock() to be called in the goroutine above
+//    nl.Unlock()
+//  }()
+//  <-uch // wait for nl.Unlock to be called
 type NotifyingLocker struct {
 	unlockChans     []chan struct{}
 	unlockChansLock *sync.Mutex
