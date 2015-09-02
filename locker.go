@@ -1,9 +1,17 @@
+// package synctest contains utilities for testing code that uses code in the
+// sync package
 package synctest
 
 import "sync"
 
 // Locker is an implementation of sync.Locker that notifies callers when
-// locks and unlocks happen. otherwise, it behaves identically as a sync.Mutex
+// locks and unlocks happen. otherwise, it behaves identically as a sync.Mutex.
+//
+// Example usage:
+//  nl := NewNotifyingLocker()
+//  ch := nl.NotifyLock()
+//  go func() { nl.Lock() }()
+//  <-ch // wait for nl.Lock() to be called
 type NotifyingLocker struct {
 	unlockChans     []chan struct{}
 	unlockChansLock *sync.Mutex
@@ -12,6 +20,7 @@ type NotifyingLocker struct {
 	lck             *sync.Mutex
 }
 
+// NewNotifyingLocker creates a new NotifyingLocker ready for use
 func NewNotifyingLocker() *NotifyingLocker {
 	return &NotifyingLocker{
 		unlockChans:     nil,
@@ -53,6 +62,7 @@ func (n *NotifyingLocker) Lock() {
 	n.lockChans = nil
 }
 
+// Unlock unlocks n and closes all unclosed channels returned previously by NotifyUnlock
 func (n *NotifyingLocker) Unlock() {
 	n.lck.Unlock()
 	n.unlockChansLock.Lock()
