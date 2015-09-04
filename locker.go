@@ -1,5 +1,3 @@
-// Package synctest contains utilities for testing code that uses code in the
-// sync package
 package synctest
 
 import "sync"
