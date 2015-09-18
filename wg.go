@@ -7,10 +7,11 @@ import (
 )
 
 var (
+	// ErrWaitTimeout is returned if a wg.Wait() times out
 	ErrWaitTimeout = errors.New("wait timed out")
 )
 
-// WaitGroupWaitChan closes the returned chan immediately after wg.Wait returns. Do not use this func in long-running
+// WaitGroupChan closes the returned chan immediately after wg.Wait returns. Do not use this func in long-running
 // production code. It uses a goroutine to call wg.Wait, so it will never return if wg.Wait never returns.
 //
 // Intended for use in tests. Example usage:
